@@ -3,16 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Menu Interactivo</title>
 </head>
 <body>
+    <h1>Menu Online</h1>
+    <h2>Cafetería</h2>
+        <ul id="menuPrincipal">
+            <li>Café o Cortado - $1250</li>
+            <li>Café con Leche - $1500</li>
+            <li>Café Doble - $1600</li>
+            <li>Café con Crema - $1400</li>
+        </ul>
+    <h2>Sandwiches</h2>
+        <ul>
+            <li>Jamón Cocido y Queso - $2000</li>
+            <li>Jamón Cocido, Queso, Tomate y Lechuga - $2200</li>
+            <li>Jamón Cocido, Queso y Tomate - $2100</li>
+            <li>Jamón Crudo y Queso - $2600</li>
+            <li>Jamón Crudo, Rúcula, Tomates Secos y Manteca - $3000</li>
+        </ul>
+    <h2>Ensaladas</h2>
+        <ul>
+            <li>
+            Ensalada Caprese Chica - $3100<br>
+            Tomate, Boconccino, Olivas Negras y Albahaca
+            </li>
+            <li>
+            Ensalada Caprese Grande - $3500<br>
+            Tomate, Boconccino, Olivas Negras y Albahaca
+            </li>
+            <li>
+            Ensalada de Rúcula, Tomates Cherry y Parmesano Chica - $2900
+            </li>
+            <li>
+            Ensalada de Rúcula, Tomates Cherry y Parmesano Grande - $3300
+            </li>
+            <li>
+            Ensalada Caesar Chica - $3800<br>
+            Blanco de Ave, Lechuga, Croutons de Pan y Parmesano
+            </li>
+            <li>
+            Ensalada Caesar Grande - $4400<br>
+            Blanco de Ave, Lechuga, Croutons de Pan y Parmesano
+            </li>
+        </ul>
+    <h2>Pizzas</h2>
+        <ul>
+            <li>Pizza Muzzarella - $5000</li>
+            <li>Pizza napolitana - $5500</li>
+            <li>Pizza especial - $6000</li>
+            <li>Pizza rúcula y Jamón crudo - $6500</li>
+        </ul>
+   
+    <h2>Platos Principales</h2>
+    <ul>
+        <li>
+          Lomo grille - $6600<br>
+          Con guarnición de puré, papas o ensalada
+        </li>
+        <li>
+          Pechuga grille - $4500<br>
+          Con guarnición de puré, papas o ensalada
+        </li>
+        <li>
+          Milanesa de peceto - $4600<br>
+          Con guarnición de puré, papas o ensalada
+        </li>
+        <li>
+          Milanesa de peceto napolitana - $5500<br>
+          Con guarnición de puré, papas o ensalada
+        </li>
+        <li>
+          Milanesa de pollo - $4500<br>
+          Con guarnición de puré, papas o ensalada
+        </li>
+        <li>
+          Milanesa de pollo napolitana - $5300<br>
+          Con guarnición de puré, papas o ensalada
+        </li>
+    </ul>
 
+    <h2>Postres</h2>
+        <ul>
+            <li>Ensalada de Frutas - $2500</li>
+            <li>Helado (2 Bochas) - $1950</li>
+            <li>Flan Mixto - $1500</li>
+            <li>Tiramisú - $1500</li>
+            <li>Chocotorta - $1900</li>
+            <li>Crumble Manzana/Pera - $2300</li>
+        </ul>
 
+    <h2>Bebidas sin alcohol</h2>
+        <ul>
+            <li>Gaseosas Línea Pepsi 350 ml - $1300</li>
+            <li>Agua Mineral 500 ml - $1300</li>
+            <li>Aguas Saborizadas 500 ml - $1300</li>
+            <li>Exprimido de Naranja - $1300</li>
+            <li>Limonada - $1100</li>
+        </ul>
 
-
-
-
+    <h2>Bebidas con alcohol</h2>
+        <ul>
+            <li>Quilmes Clásica - $1200</li>
+            <li>Stella Artois Clásica - $2700</li>
+            <li>Andes Rubia - $2300</li>
+            <li>Andes Negra - $2300</li>
+            <li>Porron Patagonia - $1300</li>
+            <li>Corona Litro - $3100</li>
+            <li>Trumpeter Malbec - $4900</li>
+            <li>San Felipe Malbec - $3200</li>
+        </ul>
     
+    <button id="buscarPlatoBtn">Buscar Plato</button>
+    <input type="text" id="terminoBusqueda" placeholder="Ingrese plato a buscar">
+    <button id="agregarPedido">Agregar Pedido</button>
+    <ul id="pedidos"></ul>
+    <div id="output"></div>
     <script src="./main.js"></script>
 </body>
 </html>
