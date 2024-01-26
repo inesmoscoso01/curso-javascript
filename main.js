@@ -1,36 +1,107 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const platoPrincipal = [];
-    console.log("Platos principales cargados:", platoPrincipal);
+    const productos = [      
+    // Sandwiches
+    { nombre: "Jamón Cocido y Queso", precio: 2000, categoria: "Sandwiches" },
+    { nombre: "Jamón Cocido, Queso, Tomate y Lechuga", precio: 2200, categoria: "Sandwiches" }, 
+    // Ensaladas
+    { nombre: "Ensalada Caprese Chica", precio: 3100, categoria: "Ensaladas" },
+    { nombre: "Ensalada Caprese Grande", precio: 3500, categoria: "Ensaladas" },    
+    // Pizzas
+    { nombre: "Pizza Muzzarella", precio: 5000, categoria: "Pizzas" },
+    { nombre: "Pizza napolitana", precio: 5500, categoria: "Pizzas" },  
+    // Platos Principales
+    { nombre: "Lomo grille", precio: 6600, categoria: "Platos Principales" },
+    { nombre: "Pechuga grille", precio: 4500, categoria: "Platos Principales" },      
+    // Postres
+    { nombre: "Ensalada de Frutas", precio: 2500, categoria: "Postres" },
+    { nombre: "Helado (2 Bochas)", precio: 1950, categoria: "Postres" },
+    ];
 
+    const categorias = ["Sandwiches", "Ensaladas", "Pizzas", "Platos Principales", "Postres"];
+    categorias.forEach(categoria => {
+        const listaCategoria = document.getElementById(`lista${categoria.replace(/ /g, '')}`);   
+        if (listaCategoria) {
+            const productosCategoria = productos.filter(producto => producto.categoria === categoria);
+            if (productosCategoria.length > 0) {
+                productosCategoria.forEach(producto => {
+                    // Renderizar productos en la lista correspondiente
+                    const li = document.createElement('li');
+                    li.textContent = `${producto.nombre} - $${producto.precio}`;      
+                    const botonAgregar = document.createElement('button');
+                    botonAgregar.textContent = "Añadir a la Orden";
+                    botonAgregar.addEventListener('click', () => agregarPedido(producto));       
+                    li.appendChild(botonAgregar);
+                    listaCategoria.appendChild(li);
+                });
+            } else {
+                console.error(`No hay productos para la categoría ${categoria}.`);
+            }
+        } else {
+            console.error(`Elemento 'lista${categoria.replace(/ /g, '')}' no encontrado.`);
+        }
+    });
+    // Elementos del DOM
+    const pedidosUl = document.getElementById('pedidos');
     const buscarPlatoBtn = document.getElementById('buscarPlatoBtn');
     const terminoBusquedaInput = document.getElementById('terminoBusqueda');
     const resultadosDiv = document.getElementById('resultadosBusqueda');
-    const agregarPedidoBtn = document.getElementById('agregarPedido');
-    const pedidosUl = document.getElementById('pedidos');
-
-    function mostrarInformacion(mensaje) {
-        const outputDiv = document.getElementById('output');
-        outputDiv.textContent = mensaje;
+  
+    // Función para añadir pedido al Local Storage y mostrar en la interfaz
+    function agregarPedido(producto) {
+        const pedidosGuardados = JSON.parse(localStorage.getItem('pedidos')) || [];
+        pedidosGuardados.push(producto);
+        localStorage.setItem('pedidos', JSON.stringify(pedidosGuardados));
+        mostrarPedidosEnInterfaz();
     }
+  
+// Función para mostrar pedidos en la interfaz
+function mostrarPedidosEnInterfaz() {
+    const pedidos = obtenerPedidosDesdeLocalStorage();
+    if (pedidos) {
+        pedidosUl.innerHTML = ""; // Limpiar pedidos anteriores
 
+        pedidos.forEach(({ nombre, precio }) => {
+            const pedidoElement = document.createElement('li');
+            pedidoElement.textContent = `${nombre} - $${precio}`;
+            pedidosUl.appendChild(pedidoElement);
+        });
+    }
+}
+
+  
+    // Función para buscar un plato
     function buscarPlato(termino) {
-        return platoPrincipal.filter(plato => plato.toLowerCase().includes(termino.toLowerCase()));
+        return productos.filter(producto => producto.nombre.toLowerCase().includes(termino.toLowerCase()));
     }
-
+  
+    // Evento de clic en el botón de buscar plato
+    if (buscarPlatoBtn && terminoBusquedaInput) {
+        buscarPlatoBtn.addEventListener('click', () => {
+            const terminoBusqueda = terminoBusquedaInput.value;
+            mostrarResultadosEnInterfaz(buscarPlato(terminoBusqueda));
+        });
+    } else {
+        console.error("Elementos 'buscarPlatoBtn' o 'terminoBusqueda' no encontrados.");
+        }
+    });
+  
+    // Función para limpiar resultados de búsqueda anteriores
     function limpiarResultadosAnteriores() {
         if (resultadosDiv) {
             resultadosDiv.innerHTML = "";
+        } else {
+            console.error("Elemento 'resultadosBusqueda' no encontrado.");
         }
     }
 
+    // Función para mostrar resultados de búsqueda en la interfaz
     function mostrarResultadosEnInterfaz(resultados) {
         limpiarResultadosAnteriores();
-
         if (resultadosDiv) {
             if (resultados.length > 0) {
-                resultados.forEach(plato => {
+                resultados.forEach(producto => {
                     const platoElement = document.createElement('p');
-                    platoElement.textContent = plato;
+                    platoElement.textContent = `${producto.nombre} - $${producto.precio}`;
                     resultadosDiv.appendChild(platoElement);
                 });
             } else {
@@ -42,72 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Elemento 'resultadosBusqueda' no encontrado.");
         }
     }
-
-    if (buscarPlatoBtn && terminoBusquedaInput) {
-        buscarPlatoBtn.addEventListener('click', () => {
-            const terminoBusqueda = terminoBusquedaInput.value;
-            console.log("Se hizo clic en buscarPlatoBtn. Término de búsqueda:", terminoBusqueda);
-
-            const resultadosBusqueda = buscarPlato(terminoBusqueda);
-            console.log("Resultados de la búsqueda:", resultadosBusqueda);
-
-            mostrarResultadosEnInterfaz(resultadosBusqueda);
-        });
-    } else {
-        console.error("Elementos 'buscarPlatoBtn' o 'terminoBusqueda' no encontrados.");
-    }
-
-    if (agregarPedidoBtn) {
-        agregarPedidoBtn.addEventListener('click', () => {
-            console.log("Se hizo clic en agregarPedidoBtn.");
-            if (platoSeleccionado) {
-                // Agrega el plato al pedido
-                const nuevoPedido = document.createElement('li');
-                nuevoPedido.textContent = platoSeleccionado;
-                pedidosUl.appendChild(nuevoPedido);
-
-                // Almacena los pedidos en localStorage
-                const pedidosGuardados = JSON.parse(localStorage.getItem('pedidos')) || [];
-                pedidosGuardados.push(platoSeleccionado);
-                localStorage.setItem('pedidos', JSON.stringify(pedidosGuardados));
-                console.log("Plato agregado al pedido:", platoSeleccionado);
-            } else {
-                console.error("No se pudo obtener el plato seleccionado.");
-            }
-        });
-    } else {
-        console.error("Elemento 'agregarPedidoBtn' no encontrado.");
-    }
-
-    console.log("Configuración de eventos completada.");
-
-    function agregarPedidoAlLocalStorage(plato) {
-        let pedidos = obtenerPedidosDesdeLocalStorage();
-
-        if (!pedidos) {
-            pedidos = [];
-        }
-
-        pedidos.push(plato);
-        localStorage.setItem('pedidos', JSON.stringify(pedidos));
-    }
-
+  
+    // Función para obtener pedidos desde Local Storage
     function obtenerPedidosDesdeLocalStorage() {
         const pedidosAlmacenados = localStorage.getItem('pedidos');
         return pedidosAlmacenados ? JSON.parse(pedidosAlmacenados) : null;
     }
-
-    function mostrarPedidosEnInterfaz() {
-        const pedidos = obtenerPedidosDesdeLocalStorage();
-
-        if (pedidos) {
-            pedidosUl.innerHTML = ""; // Limpiar pedidos anteriores
-
-            pedidos.forEach(plato => {
-                const pedidoElement = document.createElement('li');
-                pedidoElement.textContent = plato;
-                pedidosUl.appendChild(pedidoElement);
-            });
-        }
-    }
-});
