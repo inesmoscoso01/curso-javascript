@@ -1,0 +1,12 @@
+[
+    { "nombre": "Jamón Cocido y Queso", "precio": 2000, "categoria": "Sandwiches" },
+    { "nombre": "Jamón Cocido, Queso, Tomate y Lechuga", "precio": 2200, "categoria": "Sandwiches" },
+    { "nombre": "Ensalada Caprese Chica", "precio": 3100, "categoria": "Ensaladas" },
+    { "nombre": "Ensalada Caprese Grande", "precio": 3500, "categoria": "Ensaladas" },
+    { "nombre": "Pizza Muzzarella", "precio": 5000, "categoria": "Pizzas" },
+    { "nombre": "Pizza napolitana", "precio": 5500, "categoria": "Pizzas" },
+    { "nombre": "Lomo grille", "precio": 6600, "categoria": "Platos Principales" },
+    { "nombre": "Pechuga grille", "precio": 4500, "categoria": "Platos Principales" },
+    { "nombre": "Ensalada de Frutas", "precio": 2500, "categoria": "Postres" },
+    { "nombre": "Helado (2 Bochas)", "precio": 1950, "categoria": "Postres" }
+]

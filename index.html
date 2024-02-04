@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Interactivo</title>
+    <title>Menú de Pedidos</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
 </head>
 <body>
-    <h1>Menu Online</h1>
+    <h1>Menú Online</h1>
+    <div id="productosContainer">
+        <h2>Sandwiches</h2>
+        <ul id="listaSandwiches"></ul>
 
-    <h2>Sandwiches</h2>
-    <ul id="listaSandwiches"></ul>
+        <h2>Ensaladas</h2>
+        <ul id="listaEnsaladas"></ul>
 
-    <h2>Ensaladas</h2>
-    <ul id="listaEnsaladas"></ul>
+        <h2>Pizzas</h2>
+        <ul id="listaPizzas"></ul>
 
-    <h2>Pizzas</h2>
-    <ul id="listaPizzas"></ul>
+        <h2>Platos Principales</h2>
+        <ul id="listaPlatosPrincipales"></ul>
 
-    <h2>Platos Principales</h2>
-    <ul id="listaPlatosPrincipales"></ul>
+        <h2>Postres</h2>
+        <ul id="listaPostres"></ul>
+    </div>
 
-    <h2>Postres</h2>
-    <ul id="listaPostres"></ul>
-    
-    <button id="buscarPlatoBtn">Buscar Plato</button>
-    <input type="text" id="terminoBusqueda" placeholder="Ingrese plato a buscar">
-    <button id="agregarPedido">Agregar Pedido</button>
+    <h2>Carrito de Pedidos</h2>
     <ul id="pedidos"></ul>
-    <div id="resultadosBusqueda"></div>
-    <div id="output"></div>
-    <script src="./main.js"></script>
+
+    <script src="main.js"></script>
 </body>
 </html>

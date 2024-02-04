@@ -1,121 +1,129 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const productos = [      
-    // Sandwiches
-    { nombre: "Jamón Cocido y Queso", precio: 2000, categoria: "Sandwiches" },
-    { nombre: "Jamón Cocido, Queso, Tomate y Lechuga", precio: 2200, categoria: "Sandwiches" }, 
-    // Ensaladas
-    { nombre: "Ensalada Caprese Chica", precio: 3100, categoria: "Ensaladas" },
-    { nombre: "Ensalada Caprese Grande", precio: 3500, categoria: "Ensaladas" },    
-    // Pizzas
-    { nombre: "Pizza Muzzarella", precio: 5000, categoria: "Pizzas" },
-    { nombre: "Pizza napolitana", precio: 5500, categoria: "Pizzas" },  
-    // Platos Principales
-    { nombre: "Lomo grille", precio: 6600, categoria: "Platos Principales" },
-    { nombre: "Pechuga grille", precio: 4500, categoria: "Platos Principales" },      
-    // Postres
-    { nombre: "Ensalada de Frutas", precio: 2500, categoria: "Postres" },
-    { nombre: "Helado (2 Bochas)", precio: 1950, categoria: "Postres" },
-    ];
-
-    const categorias = ["Sandwiches", "Ensaladas", "Pizzas", "Platos Principales", "Postres"];
-    categorias.forEach(categoria => {
-        const listaCategoria = document.getElementById(`lista${categoria.replace(/ /g, '')}`);   
-        if (listaCategoria) {
-            const productosCategoria = productos.filter(producto => producto.categoria === categoria);
-            if (productosCategoria.length > 0) {
-                productosCategoria.forEach(producto => {
-                    // Renderizar productos en la lista correspondiente
-                    const li = document.createElement('li');
-                    li.textContent = `${producto.nombre} - $${producto.precio}`;      
-                    const botonAgregar = document.createElement('button');
-                    botonAgregar.textContent = "Añadir a la Orden";
-                    botonAgregar.addEventListener('click', () => agregarPedido(producto));       
-                    li.appendChild(botonAgregar);
-                    listaCategoria.appendChild(li);
-                });
-            } else {
-                console.error(`No hay productos para la categoría ${categoria}.`);
-            }
-        } else {
-            console.error(`Elemento 'lista${categoria.replace(/ /g, '')}' no encontrado.`);
-        }
+function mostrarError(mensaje) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: mensaje,
     });
-    // Elementos del DOM
-    const pedidosUl = document.getElementById('pedidos');
-    const buscarPlatoBtn = document.getElementById('buscarPlatoBtn');
-    const terminoBusquedaInput = document.getElementById('terminoBusqueda');
-    const resultadosDiv = document.getElementById('resultadosBusqueda');
-  
-    // Función para añadir pedido al Local Storage y mostrar en la interfaz
-    function agregarPedido(producto) {
-        const pedidosGuardados = JSON.parse(localStorage.getItem('pedidos')) || [];
-        pedidosGuardados.push(producto);
-        localStorage.setItem('pedidos', JSON.stringify(pedidosGuardados));
-        mostrarPedidosEnInterfaz();
-    }
-  
-// Función para mostrar pedidos en la interfaz
-function mostrarPedidosEnInterfaz() {
-    const pedidos = obtenerPedidosDesdeLocalStorage();
-    if (pedidos) {
-        pedidosUl.innerHTML = ""; // Limpiar pedidos anteriores
+}
 
-        pedidos.forEach(({ nombre, precio }) => {
-            const pedidoElement = document.createElement('li');
-            pedidoElement.textContent = `${nombre} - $${precio}`;
-            pedidosUl.appendChild(pedidoElement);
-        });
+async function cargarDatos() {
+    try {
+        const response = await fetch('productos.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error al cargar datos estáticos:', error.message);
+        mostrarError('Error al cargar los productos. Por favor, inténtelo de nuevo más tarde.');
+        throw error;
     }
 }
 
-  
-    // Función para buscar un plato
-    function buscarPlato(termino) {
-        return productos.filter(producto => producto.nombre.toLowerCase().includes(termino.toLowerCase()));
-    }
-  
-    // Evento de clic en el botón de buscar plato
-    if (buscarPlatoBtn && terminoBusquedaInput) {
-        buscarPlatoBtn.addEventListener('click', () => {
-            const terminoBusqueda = terminoBusquedaInput.value;
-            mostrarResultadosEnInterfaz(buscarPlato(terminoBusqueda));
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const productos = await cargarDatos();
+        const categorias = ["Sandwiches", "Ensaladas", "Pizzas", "Platos Principales", "Postres"];
+        categorias.forEach(categoria => {
+            const listaCategoria = document.getElementById(`lista${categoria.replace(/\s/g, '')}`);
+            if (listaCategoria) {
+                const productosCategoria = productos.filter(producto => producto.categoria === categoria);
+                if (productosCategoria.length > 0) {
+                    productosCategoria.forEach(producto => {
+                        const li = document.createElement('li');
+
+                        const nombreProducto = document.createTextNode(`${producto.nombre} - `);
+                        li.appendChild(nombreProducto);
+
+                        const cantidadInput = document.createElement('input');
+                        cantidadInput.type = 'number';
+                        cantidadInput.id = `cantidad-${producto.nombre.replace(/\s+/g, '-')}`;
+                        cantidadInput.value = 1; 
+                        cantidadInput.min = 1;
+                        li.appendChild(cantidadInput);
+
+                        const botonAgregar = document.createElement('button');
+                        botonAgregar.textContent = "Añadir a la Orden";
+                        botonAgregar.addEventListener('click', () => {
+                            const cantidad = parseInt(cantidadInput.value, 10);
+                            agregarPedido({ ...producto, cantidad });
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Añadido al carrito',
+                                text: `${cantidad} ${producto.nombre}(s) añadido(s) al carrito.`,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                        });
+                        li.appendChild(botonAgregar);
+                        listaCategoria.appendChild(li);
+                    });
+                } else {
+                    console.error(`No hay productos para la categoría ${categoria}.`);
+                }
+            } else {
+                console.error(`Elemento 'lista${categoria.replace(/\s/g, '')}' no encontrado.`);
+            }
         });
-    } else {
-        console.error("Elementos 'buscarPlatoBtn' o 'terminoBusqueda' no encontrados.");
+    } catch (error) {
+        console.error('Error al cargar los datos:', error.message);
+    }
+
+    function agregarPedido(producto) {
+        if (producto.cantidad < 1) {
+            mostrarError('La cantidad debe ser al menos 1.');
+            return;
         }
-    });
-  
-    // Función para limpiar resultados de búsqueda anteriores
-    function limpiarResultadosAnteriores() {
-        if (resultadosDiv) {
-            resultadosDiv.innerHTML = "";
+        const pedidosGuardados = JSON.parse(localStorage.getItem('pedidos')) || [];
+        const index = pedidosGuardados.findIndex(item => item.nombre === producto.nombre);
+        if (index !== -1) {
+            pedidosGuardados[index].cantidad += producto.cantidad;
         } else {
-            console.error("Elemento 'resultadosBusqueda' no encontrado.");
+            pedidosGuardados.push(producto);
+        }
+        localStorage.setItem('pedidos', JSON.stringify(pedidosGuardados));
+        mostrarPedidosEnInterfaz();
+    }
+
+    function mostrarPedidosEnInterfaz() {
+        const pedidosUl = document.getElementById('pedidos'); 
+        const pedidos = obtenerPedidosDesdeLocalStorage();
+        pedidosUl.innerHTML = ""; 
+        if (pedidos) {
+            let totalPedido = 0;
+            pedidos.forEach(({ nombre, precio, cantidad }) => {
+                const pedidoElement = document.createElement('li');
+                pedidoElement.textContent = `${nombre} - $${precio} x ${cantidad}`;
+
+                const botonEliminar = document.createElement('button');
+                botonEliminar.textContent = "Eliminar";
+                botonEliminar.addEventListener('click', function() {
+                    eliminarPedido(nombre);
+                    mostrarPedidosEnInterfaz(); 
+                });
+                pedidoElement.appendChild(botonEliminar);
+                pedidosUl.appendChild(pedidoElement);
+                totalPedido += precio * cantidad;
+            });
+
+            const totalElement = document.createElement('li');
+            totalElement.textContent = `Total: $${totalPedido}`;
+            pedidosUl.appendChild(totalElement);
+        } else {
+            pedidosUl.textContent = "No hay pedidos en el carrito.";
         }
     }
 
-    // Función para mostrar resultados de búsqueda en la interfaz
-    function mostrarResultadosEnInterfaz(resultados) {
-        limpiarResultadosAnteriores();
-        if (resultadosDiv) {
-            if (resultados.length > 0) {
-                resultados.forEach(producto => {
-                    const platoElement = document.createElement('p');
-                    platoElement.textContent = `${producto.nombre} - $${producto.precio}`;
-                    resultadosDiv.appendChild(platoElement);
-                });
-            } else {
-                const mensajeElement = document.createElement('p');
-                mensajeElement.textContent = "No se encontraron resultados.";
-                resultadosDiv.appendChild(mensajeElement);
-            }
-        } else {
-            console.error("Elemento 'resultadosBusqueda' no encontrado.");
-        }
-    }
-  
-    // Función para obtener pedidos desde Local Storage
     function obtenerPedidosDesdeLocalStorage() {
-        const pedidosAlmacenados = localStorage.getItem('pedidos');
-        return pedidosAlmacenados ? JSON.parse(pedidosAlmacenados) : null;
+        return JSON.parse(localStorage.getItem('pedidos')) || [];
     }
+
+    function eliminarPedido(nombre) {
+        let pedidos = obtenerPedidosDesdeLocalStorage();
+        pedidos = pedidos.filter(pedido => pedido.nombre !== nombre);
+        localStorage.setItem('pedidos', JSON.stringify(pedidos));
+        mostrarPedidosEnInterfaz();
+    }
+    
+});
